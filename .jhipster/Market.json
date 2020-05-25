@@ -1,0 +1,40 @@
+{
+  "name": "Market",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "market",
+      "fieldType": "MarketE",
+      "fieldValues": "SAMPLE_ENUM"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "stock",
+      "otherEntityRelationshipName": "market",
+      "relationshipName": "stock"
+    }
+  ],
+  "changelogDate": "20200525191751",
+  "javadoc": "The Market entity.\\n@author A true hipster",
+  "entityTableName": "market",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": ["historyService"],
+  "microserviceName": "historyService"
+}

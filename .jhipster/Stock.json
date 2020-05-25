@@ -1,0 +1,48 @@
+{
+  "name": "Stock",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "symbol",
+      "fieldType": "Symbol",
+      "fieldValues": "SAMPLE_SYMBOL",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "tick",
+      "otherEntityRelationshipName": "stock",
+      "relationshipName": "tick"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "market",
+      "otherEntityRelationshipName": "stock",
+      "relationshipName": "market",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20200525191851",
+  "javadoc": "The Stock entity.\\n@author A true hipster",
+  "entityTableName": "stock",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": ["historyService"],
+  "microserviceName": "historyService"
+}

@@ -1,0 +1,57 @@
+{
+  "name": "Tick",
+  "fields": [
+    {
+      "fieldName": "timestamp",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "open",
+      "fieldType": "Float",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "close",
+      "fieldType": "Float",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "high",
+      "fieldType": "Float",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "low",
+      "fieldType": "Float",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "volume",
+      "fieldType": "Float",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "stock",
+      "otherEntityRelationshipName": "tick",
+      "relationshipName": "stock",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20200525191951",
+  "javadoc": "The Tick entity.\\n@author A true hipster",
+  "entityTableName": "tick",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": ["historyService"],
+  "microserviceName": "historyService"
+}
