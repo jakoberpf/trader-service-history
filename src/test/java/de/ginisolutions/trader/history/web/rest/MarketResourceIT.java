@@ -3,6 +3,7 @@ package de.ginisolutions.trader.history.web.rest;
 import de.ginisolutions.trader.history.HistoryServiceApp;
 import de.ginisolutions.trader.history.config.TestSecurityConfiguration;
 import de.ginisolutions.trader.history.domain.Market;
+import de.ginisolutions.trader.history.domain.enumeration.MARKET;
 import de.ginisolutions.trader.history.repository.MarketRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import de.ginisolutions.trader.history.domain.enumeration.MarketE;
 /**
  * Integration tests for the {@link MarketResource} REST controller.
  */
@@ -37,8 +37,8 @@ public class MarketResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final MarketE DEFAULT_MARKET = MarketE.SAMPLE_ENUM;
-    private static final MarketE UPDATED_MARKET = MarketE.SAMPLE_ENUM;
+    private static final MARKET DEFAULT_MARKET = MARKET.SAMPLE_ENUM;
+    private static final MARKET UPDATED_MARKET = MARKET.SAMPLE_ENUM;
 
     @Autowired
     private MarketRepository marketRepository;
@@ -150,7 +150,7 @@ public class MarketResourceIT {
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].market").value(hasItem(DEFAULT_MARKET.toString())));
     }
-    
+
     @Test
     public void getMarket() throws Exception {
         // Initialize the database
