@@ -1,17 +1,15 @@
 package de.ginisolutions.trader.history.web.rest;
 
-import de.ginisolutions.trader.history.domain.Market;
 import de.ginisolutions.trader.history.domain.enumeration.MARKET;
-import de.ginisolutions.trader.history.repository.MarketRepository;
+import de.ginisolutions.trader.history.service.MarketService;
+import de.ginisolutions.trader.history.service.dto.MarketDTO;
 import de.ginisolutions.trader.history.web.rest.errors.BadRequestAlertException;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,21 +32,21 @@ public class MarketResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final MarketRepository marketRepository;
+    private final MarketService marketService;
 
-    public MarketResource(MarketRepository marketRepository) {
-        this.marketRepository = marketRepository;
+    public MarketResource(MarketService marketService) {
+        this.marketService = marketService;
     }
 
     /**
      * {@code POST  /markets} : Create a new market.
      *
-     * @param marketName the MARKET name of the market to create
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new market, or with status {@code 400 (Bad Request)} if the market has already an ID.
+     * @param marketName the market to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new marketDTO, or with status {@code 400 (Bad Request)} if the market has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/markets")
-    public ResponseEntity<Market> createMarket(@Valid @RequestParam String marketName) throws URISyntaxException {
+    public ResponseEntity<MarketDTO> createMarket(@Valid @RequestParam String marketName, @Valid @RequestParam String description) throws URISyntaxException {
         log.debug("REST request to create Market : {}", marketName);
         Optional<MARKET> marketEnum;
         try {
@@ -56,15 +54,10 @@ public class MarketResource {
         } catch (Exception e) {
             throw new BadRequestAlertException("The provided market name is not valid", ENTITY_NAME, "nameInvalid");
         }
-        Optional<Market> result;
-        if (marketRepository.existsByMarket(marketEnum.get())) {
-            throw new BadRequestAlertException("Market already exists by market enum", ENTITY_NAME, "enumexists");
-        } else {
-            result = Optional.of(marketRepository.save(new Market(marketEnum.get())));
-        }
-        return ResponseEntity.created(new URI("/api/markets/" + result.get().getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.get().getId()))
-            .body(result.get());
+        MarketDTO result = marketService.create(marketEnum.get(), description);
+        return ResponseEntity.created(new URI("/api/markets/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
+            .body(result);
     }
 
     /**
@@ -73,48 +66,44 @@ public class MarketResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of markets in body.
      */
     @GetMapping("/markets")
-    public List<Market> getAllMarkets() {
+    public List<MarketDTO> getAllMarkets() {
         log.debug("REST request to get all Markets");
-        return marketRepository.findAll();
+        return marketService.findAll();
     }
 
     /**
-     * {@code GET  /markets/:id} : get the "id" market.
+     * {@code GET  /markets/:id} : get the "id" market or "enum" market
      *
-     * @param id the id of the market to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the market, or with status {@code 404 (Not Found)}.
+     * @param id the id or enum of the marketDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the marketDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/markets/{id}")
-    public ResponseEntity<Market> getMarket(@PathVariable String id) {
+    public ResponseEntity<MarketDTO> getMarket(@PathVariable String id) {
+        Optional<MARKET> marketEnum = Optional.empty();
+        Optional<MarketDTO> marketDTO = Optional.empty();
+        try {
+            marketEnum = Optional.of(MARKET.valueOf(id));
+        } catch (IllegalArgumentException ex) {
+            marketDTO = marketService.findOne(id);
+        }
+        if (marketEnum.isPresent()) {
+            marketDTO = marketService.findOne(marketEnum.get());
+        }
         log.debug("REST request to get Market : {}", id);
-        Optional<Market> market = marketRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(market);
-    }
-
-    /**
-     * {@code GET  /markets/:id} : get the "id" market.
-     *
-     * @param marketName the id of the market to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the market, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/markets/{marketName}")
-    public ResponseEntity<Market> getMarketByMarket(@PathVariable String marketName) {
-        log.debug("REST request to get Market : {}", marketName);
-        Optional<Market> market = marketRepository.findById(marketName);
-        return ResponseUtil.wrapOrNotFound(market);
+        return ResponseUtil.wrapOrNotFound(marketDTO);
     }
 
     /**
      * {@code DELETE  /markets/:id} : delete the "id" market.
      *
-     * @param id the id of the market to delete.
+     * @param id the id of the marketDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/markets/{id}")
     public ResponseEntity<Void> deleteMarket(@PathVariable String id) {
         log.debug("REST request to delete Market : {}", id);
 
-        marketRepository.deleteById(id);
+        marketService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
 }

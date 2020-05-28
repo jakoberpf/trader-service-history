@@ -3,8 +3,10 @@ package de.ginisolutions.trader.history.web.rest;
 import de.ginisolutions.trader.history.HistoryServiceApp;
 import de.ginisolutions.trader.history.config.TestSecurityConfiguration;
 import de.ginisolutions.trader.history.domain.Stock;
-import de.ginisolutions.trader.history.domain.enumeration.SYMBOL;
 import de.ginisolutions.trader.history.repository.StockRepository;
+import de.ginisolutions.trader.history.service.StockService;
+import de.ginisolutions.trader.history.service.dto.StockDTO;
+import de.ginisolutions.trader.history.service.mapper.StockMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import de.ginisolutions.trader.history.domain.enumeration.SYMBOL;
 /**
  * Integration tests for the {@link StockResource} REST controller.
  */
@@ -45,6 +48,12 @@ public class StockResourceIT {
     private StockRepository stockRepository;
 
     @Autowired
+    private StockMapper stockMapper;
+
+    @Autowired
+    private StockService stockService;
+
+    @Autowired
     private MockMvc restStockMockMvc;
 
     private Stock stock;
@@ -57,7 +66,6 @@ public class StockResourceIT {
      */
     public static Stock createEntity() {
         Stock stock = new Stock()
-            .name(DEFAULT_NAME)
             .description(DEFAULT_DESCRIPTION)
             .symbol(DEFAULT_SYMBOL);
         return stock;
@@ -70,7 +78,6 @@ public class StockResourceIT {
      */
     public static Stock createUpdatedEntity() {
         Stock stock = new Stock()
-            .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
             .symbol(UPDATED_SYMBOL);
         return stock;
@@ -86,16 +93,16 @@ public class StockResourceIT {
     public void createStock() throws Exception {
         int databaseSizeBeforeCreate = stockRepository.findAll().size();
         // Create the Stock
+        StockDTO stockDTO = stockMapper.toDto(stock);
         restStockMockMvc.perform(post("/api/stocks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Stock in the database
         List<Stock> stockList = stockRepository.findAll();
         assertThat(stockList).hasSize(databaseSizeBeforeCreate + 1);
         Stock testStock = stockList.get(stockList.size() - 1);
-        assertThat(testStock.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testStock.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testStock.getSymbol()).isEqualTo(DEFAULT_SYMBOL);
     }
@@ -106,35 +113,17 @@ public class StockResourceIT {
 
         // Create the Stock with an existing ID
         stock.setId("existing_id");
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restStockMockMvc.perform(post("/api/stocks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Stock in the database
         List<Stock> stockList = stockRepository.findAll();
         assertThat(stockList).hasSize(databaseSizeBeforeCreate);
-    }
-
-
-    @Test
-    public void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = stockRepository.findAll().size();
-        // set the field null
-        stock.setName(null);
-
-        // Create the Stock, which fails.
-
-
-        restStockMockMvc.perform(post("/api/stocks").with(csrf())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
-            .andExpect(status().isBadRequest());
-
-        List<Stock> stockList = stockRepository.findAll();
-        assertThat(stockList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -144,11 +133,12 @@ public class StockResourceIT {
         stock.setSymbol(null);
 
         // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
 
         restStockMockMvc.perform(post("/api/stocks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         List<Stock> stockList = stockRepository.findAll();
@@ -165,9 +155,8 @@ public class StockResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(stock.getId())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
-//            .andExpect(jsonPath("$.[*].symbol").value(hasItem(DEFAULT_SYMBOL.toString()))); FIXME
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].symbol").value(hasItem(DEFAULT_SYMBOL.toString())));
     }
 
     @Test
@@ -180,9 +169,8 @@ public class StockResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(stock.getId()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
-//            .andExpect(jsonPath("$.symbol").value(DEFAULT_SYMBOL.toString())); FIXME
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+            .andExpect(jsonPath("$.symbol").value(DEFAULT_SYMBOL.toString()));
     }
     @Test
     public void getNonExistingStock() throws Exception {
@@ -201,20 +189,19 @@ public class StockResourceIT {
         // Update the stock
         Stock updatedStock = stockRepository.findById(stock.getId()).get();
         updatedStock
-            .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
             .symbol(UPDATED_SYMBOL);
+        StockDTO stockDTO = stockMapper.toDto(updatedStock);
 
         restStockMockMvc.perform(put("/api/stocks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(updatedStock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isOk());
 
         // Validate the Stock in the database
         List<Stock> stockList = stockRepository.findAll();
         assertThat(stockList).hasSize(databaseSizeBeforeUpdate);
         Stock testStock = stockList.get(stockList.size() - 1);
-        assertThat(testStock.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testStock.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testStock.getSymbol()).isEqualTo(UPDATED_SYMBOL);
     }
@@ -223,10 +210,13 @@ public class StockResourceIT {
     public void updateNonExistingStock() throws Exception {
         int databaseSizeBeforeUpdate = stockRepository.findAll().size();
 
+        // Create the Stock
+        StockDTO stockDTO = stockMapper.toDto(stock);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restStockMockMvc.perform(put("/api/stocks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Stock in the database

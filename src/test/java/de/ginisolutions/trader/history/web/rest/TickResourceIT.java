@@ -4,6 +4,9 @@ import de.ginisolutions.trader.history.HistoryServiceApp;
 import de.ginisolutions.trader.history.config.TestSecurityConfiguration;
 import de.ginisolutions.trader.history.domain.Tick;
 import de.ginisolutions.trader.history.repository.TickRepository;
+import de.ginisolutions.trader.history.service.TickService;
+import de.ginisolutions.trader.history.service.dto.TickDTO;
+import de.ginisolutions.trader.history.service.mapper.TickMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,6 +53,12 @@ public class TickResourceIT {
 
     @Autowired
     private TickRepository tickRepository;
+
+    @Autowired
+    private TickMapper tickMapper;
+
+    @Autowired
+    private TickService tickService;
 
     @Autowired
     private MockMvc restTickMockMvc;
@@ -99,9 +108,10 @@ public class TickResourceIT {
     public void createTick() throws Exception {
         int databaseSizeBeforeCreate = tickRepository.findAll().size();
         // Create the Tick
+        TickDTO tickDTO = tickMapper.toDto(tick);
         restTickMockMvc.perform(post("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(tick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Tick in the database
@@ -122,11 +132,12 @@ public class TickResourceIT {
 
         // Create the Tick with an existing ID
         tick.setId("existing_id");
+        TickDTO tickDTO = tickMapper.toDto(tick);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTickMockMvc.perform(post("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(tick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Tick in the database
@@ -142,11 +153,12 @@ public class TickResourceIT {
         tick.setTimestamp(null);
 
         // Create the Tick, which fails.
+        TickDTO tickDTO = tickMapper.toDto(tick);
 
 
         restTickMockMvc.perform(post("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(tick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isBadRequest());
 
         List<Tick> tickList = tickRepository.findAll();
@@ -160,11 +172,12 @@ public class TickResourceIT {
         tick.setOpen(null);
 
         // Create the Tick, which fails.
+        TickDTO tickDTO = tickMapper.toDto(tick);
 
 
         restTickMockMvc.perform(post("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(tick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isBadRequest());
 
         List<Tick> tickList = tickRepository.findAll();
@@ -178,11 +191,12 @@ public class TickResourceIT {
         tick.setClose(null);
 
         // Create the Tick, which fails.
+        TickDTO tickDTO = tickMapper.toDto(tick);
 
 
         restTickMockMvc.perform(post("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(tick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isBadRequest());
 
         List<Tick> tickList = tickRepository.findAll();
@@ -196,11 +210,12 @@ public class TickResourceIT {
         tick.setHigh(null);
 
         // Create the Tick, which fails.
+        TickDTO tickDTO = tickMapper.toDto(tick);
 
 
         restTickMockMvc.perform(post("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(tick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isBadRequest());
 
         List<Tick> tickList = tickRepository.findAll();
@@ -214,11 +229,12 @@ public class TickResourceIT {
         tick.setLow(null);
 
         // Create the Tick, which fails.
+        TickDTO tickDTO = tickMapper.toDto(tick);
 
 
         restTickMockMvc.perform(post("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(tick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isBadRequest());
 
         List<Tick> tickList = tickRepository.findAll();
@@ -232,11 +248,12 @@ public class TickResourceIT {
         tick.setVolume(null);
 
         // Create the Tick, which fails.
+        TickDTO tickDTO = tickMapper.toDto(tick);
 
 
         restTickMockMvc.perform(post("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(tick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isBadRequest());
 
         List<Tick> tickList = tickRepository.findAll();
@@ -254,11 +271,11 @@ public class TickResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(tick.getId())))
             .andExpect(jsonPath("$.[*].timestamp").value(hasItem(DEFAULT_TIMESTAMP.intValue())))
-            .andExpect(jsonPath("$.[*].open").value(hasItem(DEFAULT_OPEN)))
-            .andExpect(jsonPath("$.[*].close").value(hasItem(DEFAULT_CLOSE)))
-            .andExpect(jsonPath("$.[*].high").value(hasItem(DEFAULT_HIGH)))
-            .andExpect(jsonPath("$.[*].low").value(hasItem(DEFAULT_LOW)))
-            .andExpect(jsonPath("$.[*].volume").value(hasItem(DEFAULT_VOLUME)));
+            .andExpect(jsonPath("$.[*].open").value(hasItem(DEFAULT_OPEN.doubleValue())))
+            .andExpect(jsonPath("$.[*].close").value(hasItem(DEFAULT_CLOSE.doubleValue())))
+            .andExpect(jsonPath("$.[*].high").value(hasItem(DEFAULT_HIGH.doubleValue())))
+            .andExpect(jsonPath("$.[*].low").value(hasItem(DEFAULT_LOW.doubleValue())))
+            .andExpect(jsonPath("$.[*].volume").value(hasItem(DEFAULT_VOLUME.doubleValue())));
     }
 
     @Test
@@ -272,11 +289,11 @@ public class TickResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(tick.getId()))
             .andExpect(jsonPath("$.timestamp").value(DEFAULT_TIMESTAMP.intValue()))
-            .andExpect(jsonPath("$.open").value(DEFAULT_OPEN))
-            .andExpect(jsonPath("$.close").value(DEFAULT_CLOSE))
-            .andExpect(jsonPath("$.high").value(DEFAULT_HIGH))
-            .andExpect(jsonPath("$.low").value(DEFAULT_LOW))
-            .andExpect(jsonPath("$.volume").value(DEFAULT_VOLUME));
+            .andExpect(jsonPath("$.open").value(DEFAULT_OPEN.doubleValue()))
+            .andExpect(jsonPath("$.close").value(DEFAULT_CLOSE.doubleValue()))
+            .andExpect(jsonPath("$.high").value(DEFAULT_HIGH.doubleValue()))
+            .andExpect(jsonPath("$.low").value(DEFAULT_LOW.doubleValue()))
+            .andExpect(jsonPath("$.volume").value(DEFAULT_VOLUME.doubleValue()));
     }
     @Test
     public void getNonExistingTick() throws Exception {
@@ -301,10 +318,11 @@ public class TickResourceIT {
             .high(UPDATED_HIGH)
             .low(UPDATED_LOW)
             .volume(UPDATED_VOLUME);
+        TickDTO tickDTO = tickMapper.toDto(updatedTick);
 
         restTickMockMvc.perform(put("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(updatedTick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isOk());
 
         // Validate the Tick in the database
@@ -323,10 +341,13 @@ public class TickResourceIT {
     public void updateNonExistingTick() throws Exception {
         int databaseSizeBeforeUpdate = tickRepository.findAll().size();
 
+        // Create the Tick
+        TickDTO tickDTO = tickMapper.toDto(tick);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTickMockMvc.perform(put("/api/ticks").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(tick)))
+            .content(TestUtil.convertObjectToJsonBytes(tickDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Tick in the database
