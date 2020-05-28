@@ -33,20 +33,20 @@ public class TickResourceIT {
     private static final Long DEFAULT_TIMESTAMP = 1L;
     private static final Long UPDATED_TIMESTAMP = 2L;
 
-    private static final Float DEFAULT_OPEN = 1F;
-    private static final Float UPDATED_OPEN = 2F;
+    private static final Double DEFAULT_OPEN = 1.0;
+    private static final Double UPDATED_OPEN = 2.0;
 
-    private static final Float DEFAULT_CLOSE = 1F;
-    private static final Float UPDATED_CLOSE = 2F;
+    private static final Double DEFAULT_CLOSE = 1.0;
+    private static final Double UPDATED_CLOSE = 2.0;
 
-    private static final Float DEFAULT_HIGH = 1F;
-    private static final Float UPDATED_HIGH = 2F;
+    private static final Double DEFAULT_HIGH = 1.0;
+    private static final Double UPDATED_HIGH = 2.0;
 
-    private static final Float DEFAULT_LOW = 1F;
-    private static final Float UPDATED_LOW = 2F;
+    private static final Double DEFAULT_LOW = 1.0;
+    private static final Double UPDATED_LOW = 2.0;
 
-    private static final Float DEFAULT_VOLUME = 1F;
-    private static final Float UPDATED_VOLUME = 2F;
+    private static final Double DEFAULT_VOLUME = 1.0;
+    private static final Double UPDATED_VOLUME = 2.0;
 
     @Autowired
     private TickRepository tickRepository;
@@ -254,13 +254,13 @@ public class TickResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(tick.getId())))
             .andExpect(jsonPath("$.[*].timestamp").value(hasItem(DEFAULT_TIMESTAMP.intValue())))
-            .andExpect(jsonPath("$.[*].open").value(hasItem(DEFAULT_OPEN.doubleValue())))
-            .andExpect(jsonPath("$.[*].close").value(hasItem(DEFAULT_CLOSE.doubleValue())))
-            .andExpect(jsonPath("$.[*].high").value(hasItem(DEFAULT_HIGH.doubleValue())))
-            .andExpect(jsonPath("$.[*].low").value(hasItem(DEFAULT_LOW.doubleValue())))
-            .andExpect(jsonPath("$.[*].volume").value(hasItem(DEFAULT_VOLUME.doubleValue())));
+            .andExpect(jsonPath("$.[*].open").value(hasItem(DEFAULT_OPEN)))
+            .andExpect(jsonPath("$.[*].close").value(hasItem(DEFAULT_CLOSE)))
+            .andExpect(jsonPath("$.[*].high").value(hasItem(DEFAULT_HIGH)))
+            .andExpect(jsonPath("$.[*].low").value(hasItem(DEFAULT_LOW)))
+            .andExpect(jsonPath("$.[*].volume").value(hasItem(DEFAULT_VOLUME)));
     }
-    
+
     @Test
     public void getTick() throws Exception {
         // Initialize the database
@@ -272,11 +272,11 @@ public class TickResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(tick.getId()))
             .andExpect(jsonPath("$.timestamp").value(DEFAULT_TIMESTAMP.intValue()))
-            .andExpect(jsonPath("$.open").value(DEFAULT_OPEN.doubleValue()))
-            .andExpect(jsonPath("$.close").value(DEFAULT_CLOSE.doubleValue()))
-            .andExpect(jsonPath("$.high").value(DEFAULT_HIGH.doubleValue()))
-            .andExpect(jsonPath("$.low").value(DEFAULT_LOW.doubleValue()))
-            .andExpect(jsonPath("$.volume").value(DEFAULT_VOLUME.doubleValue()));
+            .andExpect(jsonPath("$.open").value(DEFAULT_OPEN))
+            .andExpect(jsonPath("$.close").value(DEFAULT_CLOSE))
+            .andExpect(jsonPath("$.high").value(DEFAULT_HIGH))
+            .andExpect(jsonPath("$.low").value(DEFAULT_LOW))
+            .andExpect(jsonPath("$.volume").value(DEFAULT_VOLUME));
     }
     @Test
     public void getNonExistingTick() throws Exception {

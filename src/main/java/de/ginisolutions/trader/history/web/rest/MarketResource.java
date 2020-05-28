@@ -1,6 +1,7 @@
 package de.ginisolutions.trader.history.web.rest;
 
 import de.ginisolutions.trader.history.domain.Market;
+import de.ginisolutions.trader.history.domain.enumeration.MARKET;
 import de.ginisolutions.trader.history.repository.MarketRepository;
 import de.ginisolutions.trader.history.web.rest.errors.BadRequestAlertException;
 
@@ -42,41 +43,28 @@ public class MarketResource {
     /**
      * {@code POST  /markets} : Create a new market.
      *
-     * @param market the market to create.
+     * @param marketName the MARKET name of the market to create
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new market, or with status {@code 400 (Bad Request)} if the market has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/markets")
-    public ResponseEntity<Market> createMarket(@Valid @RequestBody Market market) throws URISyntaxException {
-        log.debug("REST request to save Market : {}", market);
-        if (market.getId() != null) {
-            throw new BadRequestAlertException("A new market cannot already have an ID", ENTITY_NAME, "idexists");
+    public ResponseEntity<Market> createMarket(@Valid @RequestParam String marketName) throws URISyntaxException {
+        log.debug("REST request to create Market : {}", marketName);
+        Optional<MARKET> marketEnum;
+        try {
+            marketEnum = Optional.of(MARKET.valueOf(marketName));
+        } catch (Exception e) {
+            throw new BadRequestAlertException("The provided market name is not valid", ENTITY_NAME, "nameInvalid");
         }
-        Market result = marketRepository.save(market);
-        return ResponseEntity.created(new URI("/api/markets/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
-            .body(result);
-    }
-
-    /**
-     * {@code PUT  /markets} : Updates an existing market.
-     *
-     * @param market the market to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated market,
-     * or with status {@code 400 (Bad Request)} if the market is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the market couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PutMapping("/markets")
-    public ResponseEntity<Market> updateMarket(@Valid @RequestBody Market market) throws URISyntaxException {
-        log.debug("REST request to update Market : {}", market);
-        if (market.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        Optional<Market> result;
+        if (marketRepository.existsByMarket(marketEnum.get())) {
+            throw new BadRequestAlertException("Market already exists by market enum", ENTITY_NAME, "enumexists");
+        } else {
+            result = Optional.of(marketRepository.save(new Market(marketEnum.get())));
         }
-        Market result = marketRepository.save(market);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, market.getId()))
-            .body(result);
+        return ResponseEntity.created(new URI("/api/markets/" + result.get().getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.get().getId()))
+            .body(result.get());
     }
 
     /**
@@ -100,6 +88,19 @@ public class MarketResource {
     public ResponseEntity<Market> getMarket(@PathVariable String id) {
         log.debug("REST request to get Market : {}", id);
         Optional<Market> market = marketRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(market);
+    }
+
+    /**
+     * {@code GET  /markets/:id} : get the "id" market.
+     *
+     * @param marketName the id of the market to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the market, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/markets/{marketName}")
+    public ResponseEntity<Market> getMarketByMarket(@PathVariable String marketName) {
+        log.debug("REST request to get Market : {}", marketName);
+        Optional<Market> market = marketRepository.findById(marketName);
         return ResponseUtil.wrapOrNotFound(market);
     }
 
