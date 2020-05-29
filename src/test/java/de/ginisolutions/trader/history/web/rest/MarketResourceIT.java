@@ -20,13 +20,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static de.ginisolutions.trader.history.domain.enumeration.MARKET.SAMPLE_ENUM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import de.ginisolutions.trader.history.domain.enumeration.MARKET;
 /**
  * Integration tests for the {@link MarketResource} REST controller.
  */
@@ -35,8 +35,8 @@ import de.ginisolutions.trader.history.domain.enumeration.MARKET;
 @WithMockUser
 public class MarketResourceIT {
 
-    private static final MARKET DEFAULT_MARKET = MARKET.SAMPLE_ENUM;
-    private static final MARKET UPDATED_MARKET = MARKET.SAMPLE_ENUM;
+    private static final MARKET DEFAULT_MARKET = SAMPLE_ENUM;
+    private static final MARKET UPDATED_MARKET = SAMPLE_ENUM;
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
@@ -174,7 +174,7 @@ public class MarketResourceIT {
             .andExpect(jsonPath("$.[*].market").value(hasItem(DEFAULT_MARKET.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
-    
+
     @Test
     public void getMarketById() throws Exception {
         // Initialize the database

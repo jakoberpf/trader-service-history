@@ -5,7 +5,6 @@ import de.ginisolutions.trader.history.domain.enumeration.MARKET;
 import de.ginisolutions.trader.history.repository.MarketRepository;
 import de.ginisolutions.trader.history.service.dto.MarketDTO;
 import de.ginisolutions.trader.history.service.mapper.MarketMapper;
-import de.ginisolutions.trader.history.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

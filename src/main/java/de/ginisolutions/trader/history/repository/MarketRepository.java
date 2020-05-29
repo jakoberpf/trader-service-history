@@ -1,9 +1,7 @@
 package de.ginisolutions.trader.history.repository;
 
 import de.ginisolutions.trader.history.domain.Market;
-
 import de.ginisolutions.trader.history.domain.enumeration.MARKET;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
