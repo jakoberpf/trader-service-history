@@ -35,14 +35,11 @@ import de.ginisolutions.trader.history.domain.enumeration.SYMBOL;
 @WithMockUser
 public class StockResourceIT {
 
-    private static final String DEFAULT_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_NAME = "BBBBBBBBBB";
+    private static final SYMBOL DEFAULT_SYMBOL = SYMBOL.SAMPLE_SYMBOL;
+    private static final SYMBOL UPDATED_SYMBOL = SYMBOL.SAMPLE_SYMBOL;
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
-
-    private static final SYMBOL DEFAULT_SYMBOL = SAMPLE_ENUM;
-    private static final SYMBOL UPDATED_SYMBOL = SAMPLE_ENUM;
 
     @Autowired
     private StockRepository stockRepository;
@@ -66,8 +63,8 @@ public class StockResourceIT {
      */
     public static Stock createEntity() {
         Stock stock = new Stock()
-            .description(DEFAULT_DESCRIPTION)
-            .symbol(DEFAULT_SYMBOL);
+            .symbol(DEFAULT_SYMBOL)
+            .description(DEFAULT_DESCRIPTION);
         return stock;
     }
     /**
@@ -78,8 +75,8 @@ public class StockResourceIT {
      */
     public static Stock createUpdatedEntity() {
         Stock stock = new Stock()
-            .description(UPDATED_DESCRIPTION)
-            .symbol(UPDATED_SYMBOL);
+            .symbol(UPDATED_SYMBOL)
+            .description(UPDATED_DESCRIPTION);
         return stock;
     }
 
@@ -103,8 +100,8 @@ public class StockResourceIT {
         List<Stock> stockList = stockRepository.findAll();
         assertThat(stockList).hasSize(databaseSizeBeforeCreate + 1);
         Stock testStock = stockList.get(stockList.size() - 1);
-        assertThat(testStock.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testStock.getSymbol()).isEqualTo(DEFAULT_SYMBOL);
+        assertThat(testStock.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
     }
 
     @Test
@@ -126,11 +123,31 @@ public class StockResourceIT {
         assertThat(stockList).hasSize(databaseSizeBeforeCreate);
     }
 
+
     @Test
     public void checkSymbolIsRequired() throws Exception {
         int databaseSizeBeforeTest = stockRepository.findAll().size();
         // set the field null
         stock.setSymbol(null);
+
+        // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
+
+
+        restStockMockMvc.perform(post("/api/stocks").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Stock> stockList = stockRepository.findAll();
+        assertThat(stockList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    public void checkDescriptionIsRequired() throws Exception {
+        int databaseSizeBeforeTest = stockRepository.findAll().size();
+        // set the field null
+        stock.setDescription(null);
 
         // Create the Stock, which fails.
         StockDTO stockDTO = stockMapper.toDto(stock);
@@ -155,10 +172,10 @@ public class StockResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(stock.getId())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].symbol").value(hasItem(DEFAULT_SYMBOL.toString())));
+            .andExpect(jsonPath("$.[*].symbol").value(hasItem(DEFAULT_SYMBOL.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
-
+    
     @Test
     public void getStock() throws Exception {
         // Initialize the database
@@ -169,8 +186,8 @@ public class StockResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(stock.getId()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.symbol").value(DEFAULT_SYMBOL.toString()));
+            .andExpect(jsonPath("$.symbol").value(DEFAULT_SYMBOL.toString()))
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
     }
     @Test
     public void getNonExistingStock() throws Exception {
@@ -189,8 +206,8 @@ public class StockResourceIT {
         // Update the stock
         Stock updatedStock = stockRepository.findById(stock.getId()).get();
         updatedStock
-            .description(UPDATED_DESCRIPTION)
-            .symbol(UPDATED_SYMBOL);
+            .symbol(UPDATED_SYMBOL)
+            .description(UPDATED_DESCRIPTION);
         StockDTO stockDTO = stockMapper.toDto(updatedStock);
 
         restStockMockMvc.perform(put("/api/stocks").with(csrf())
@@ -202,8 +219,8 @@ public class StockResourceIT {
         List<Stock> stockList = stockRepository.findAll();
         assertThat(stockList).hasSize(databaseSizeBeforeUpdate);
         Stock testStock = stockList.get(stockList.size() - 1);
-        assertThat(testStock.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testStock.getSymbol()).isEqualTo(UPDATED_SYMBOL);
+        assertThat(testStock.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
     }
 
     @Test

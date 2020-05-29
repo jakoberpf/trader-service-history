@@ -10,17 +10,16 @@ import de.ginisolutions.trader.history.domain.enumeration.MARKET;
  */
 @ApiModel(description = "The Market entity.\n@author A true hipster")
 public class MarketDTO implements Serializable {
-
+    
     private String id;
 
     @NotNull
-    private String name;
-
-    private String description;
-
     private MARKET market;
 
+    @NotNull
+    private String description;
 
+    
     public String getId() {
         return id;
     }
@@ -29,12 +28,12 @@ public class MarketDTO implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public MARKET getMarket() {
+        return market;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMarket(MARKET market) {
+        this.market = market;
     }
 
     public String getDescription() {
@@ -43,14 +42,6 @@ public class MarketDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public MARKET getMarket() {
-        return market;
-    }
-
-    public void setMarket(MARKET market) {
-        this.market = market;
     }
 
     @Override
@@ -75,9 +66,8 @@ public class MarketDTO implements Serializable {
     public String toString() {
         return "MarketDTO{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", description='" + getDescription() + "'" +
             ", market='" + getMarket() + "'" +
+            ", description='" + getDescription() + "'" +
             "}";
     }
 }

@@ -20,13 +20,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static de.ginisolutions.trader.history.domain.enumeration.MARKET.SAMPLE_ENUM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import de.ginisolutions.trader.history.domain.enumeration.MARKET;
 /**
  * Integration tests for the {@link MarketResource} REST controller.
  */
@@ -35,8 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 public class MarketResourceIT {
 
-    private static final MARKET DEFAULT_MARKET = SAMPLE_ENUM;
-    private static final MARKET UPDATED_MARKET = SAMPLE_ENUM;
+    private static final MARKET DEFAULT_MARKET = MARKET.SAMPLE_ENUM;
+    private static final MARKET UPDATED_MARKET = MARKET.SAMPLE_ENUM;
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
@@ -63,8 +63,8 @@ public class MarketResourceIT {
      */
     public static Market createEntity() {
         Market market = new Market()
-            .description(DEFAULT_DESCRIPTION)
-            .market(DEFAULT_MARKET);
+            .market(DEFAULT_MARKET)
+            .description(DEFAULT_DESCRIPTION);
         return market;
     }
     /**
@@ -75,8 +75,8 @@ public class MarketResourceIT {
      */
     public static Market createUpdatedEntity() {
         Market market = new Market()
-            .description(UPDATED_DESCRIPTION)
-            .market(UPDATED_MARKET);
+            .market(UPDATED_MARKET)
+            .description(UPDATED_DESCRIPTION);
         return market;
     }
 
@@ -99,8 +99,8 @@ public class MarketResourceIT {
         List<Market> marketList = marketRepository.findAll();
         assertThat(marketList).hasSize(databaseSizeBeforeCreate + 1);
         Market testMarket = marketList.get(marketList.size() - 1);
-        assertThat(testMarket.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testMarket.getMarket()).isEqualTo(DEFAULT_MARKET);
+        assertThat(testMarket.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
     }
 
     @Test
@@ -124,6 +124,44 @@ public class MarketResourceIT {
 
 
     @Test
+    public void checkMarketIsRequired() throws Exception {
+        int databaseSizeBeforeTest = marketRepository.findAll().size();
+        // set the field null
+        market.setMarket(null);
+
+        // Create the Market, which fails.
+        MarketDTO marketDTO = marketMapper.toDto(market);
+
+
+        restMarketMockMvc.perform(post("/api/markets").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(marketDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Market> marketList = marketRepository.findAll();
+        assertThat(marketList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    public void checkDescriptionIsRequired() throws Exception {
+        int databaseSizeBeforeTest = marketRepository.findAll().size();
+        // set the field null
+        market.setDescription(null);
+
+        // Create the Market, which fails.
+        MarketDTO marketDTO = marketMapper.toDto(market);
+
+
+        restMarketMockMvc.perform(post("/api/markets").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(marketDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Market> marketList = marketRepository.findAll();
+        assertThat(marketList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
     public void getAllMarkets() throws Exception {
         // Initialize the database
         marketRepository.save(market);
@@ -133,10 +171,10 @@ public class MarketResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(market.getId())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].market").value(hasItem(DEFAULT_MARKET.toString())));
+            .andExpect(jsonPath("$.[*].market").value(hasItem(DEFAULT_MARKET.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
-
+    
     @Test
     public void getMarketById() throws Exception {
         // Initialize the database
@@ -147,24 +185,9 @@ public class MarketResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(market.getId()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.market").value(DEFAULT_MARKET.toString()));
+            .andExpect(jsonPath("$.market").value(DEFAULT_MARKET.toString()))
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
     }
-
-    @Test
-    public void getMarketByEnum() throws Exception {
-        // Initialize the database
-        marketRepository.save(market);
-
-        // Get the market
-        restMarketMockMvc.perform(get("/api/markets/{id}", market.getMarket()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(market.getId()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.market").value(DEFAULT_MARKET.toString()));
-    }
-
     @Test
     public void getNonExistingMarket() throws Exception {
         // Get the market
@@ -172,50 +195,50 @@ public class MarketResourceIT {
             .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    public void updateMarket() throws Exception {
-//        // Initialize the database
-//        marketRepository.save(market);
-//
-//        int databaseSizeBeforeUpdate = marketRepository.findAll().size();
-//
-//        // Update the market
-//        Market updatedMarket = marketRepository.findById(market.getId()).get();
-//        updatedMarket
-//            .description(UPDATED_DESCRIPTION)
-//            .market(UPDATED_MARKET);
-//        MarketDTO marketDTO = marketMapper.toDto(updatedMarket);
-//
-//        restMarketMockMvc.perform(put("/api/markets").with(csrf())
-//            .contentType(MediaType.APPLICATION_JSON)
-//            .content(TestUtil.convertObjectToJsonBytes(marketDTO)))
-//            .andExpect(status().isOk());
-//
-//        // Validate the Market in the database
-//        List<Market> marketList = marketRepository.findAll();
-//        assertThat(marketList).hasSize(databaseSizeBeforeUpdate);
-//        Market testMarket = marketList.get(marketList.size() - 1);
-//        assertThat(testMarket.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-//        assertThat(testMarket.getMarket()).isEqualTo(UPDATED_MARKET);
-//    }
-//
-//    @Test
-//    public void updateNonExistingMarket() throws Exception {
-//        int databaseSizeBeforeUpdate = marketRepository.findAll().size();
-//
-//        // Create the Market
-//        MarketDTO marketDTO = marketMapper.toDto(market);
-//
-//        // If the entity doesn't have an ID, it will throw BadRequestAlertException
-//        restMarketMockMvc.perform(put("/api/markets").with(csrf())
-//            .contentType(MediaType.APPLICATION_JSON)
-//            .content(TestUtil.convertObjectToJsonBytes(marketDTO)))
-//            .andExpect(status().isBadRequest());
-//
-//        // Validate the Market in the database
-//        List<Market> marketList = marketRepository.findAll();
-//        assertThat(marketList).hasSize(databaseSizeBeforeUpdate);
-//    }
+    @Test
+    public void updateMarket() throws Exception {
+        // Initialize the database
+        marketRepository.save(market);
+
+        int databaseSizeBeforeUpdate = marketRepository.findAll().size();
+
+        // Update the market
+        Market updatedMarket = marketRepository.findById(market.getId()).get();
+        updatedMarket
+            .market(UPDATED_MARKET)
+            .description(UPDATED_DESCRIPTION);
+        MarketDTO marketDTO = marketMapper.toDto(updatedMarket);
+
+        restMarketMockMvc.perform(put("/api/markets").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(marketDTO)))
+            .andExpect(status().isOk());
+
+        // Validate the Market in the database
+        List<Market> marketList = marketRepository.findAll();
+        assertThat(marketList).hasSize(databaseSizeBeforeUpdate);
+        Market testMarket = marketList.get(marketList.size() - 1);
+        assertThat(testMarket.getMarket()).isEqualTo(UPDATED_MARKET);
+        assertThat(testMarket.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    public void updateNonExistingMarket() throws Exception {
+        int databaseSizeBeforeUpdate = marketRepository.findAll().size();
+
+        // Create the Market
+        MarketDTO marketDTO = marketMapper.toDto(market);
+
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
+        restMarketMockMvc.perform(put("/api/markets").with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(marketDTO)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Market in the database
+        List<Market> marketList = marketRepository.findAll();
+        assertThat(marketList).hasSize(databaseSizeBeforeUpdate);
+    }
 
     @Test
     public void deleteMarket() throws Exception {

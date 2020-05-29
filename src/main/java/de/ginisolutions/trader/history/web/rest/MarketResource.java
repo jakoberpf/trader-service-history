@@ -2,8 +2,9 @@ package de.ginisolutions.trader.history.web.rest;
 
 import de.ginisolutions.trader.history.domain.enumeration.MARKET;
 import de.ginisolutions.trader.history.service.MarketService;
-import de.ginisolutions.trader.history.service.dto.MarketDTO;
 import de.ginisolutions.trader.history.web.rest.errors.BadRequestAlertException;
+import de.ginisolutions.trader.history.service.dto.MarketDTO;
+
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -57,6 +58,27 @@ public class MarketResource {
         MarketDTO result = marketService.create(marketEnum.get(), description);
         return ResponseEntity.created(new URI("/api/markets/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
+            .body(result);
+    }
+
+    /**
+     * {@code PUT  /markets} : Updates an existing market.
+     *
+     * @param marketDTO the marketDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated marketDTO,
+     * or with status {@code 400 (Bad Request)} if the marketDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the marketDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("/markets")
+    public ResponseEntity<MarketDTO> updateMarket(@Valid @RequestBody MarketDTO marketDTO) throws URISyntaxException {
+        log.debug("REST request to update Market : {}", marketDTO);
+        if (marketDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        MarketDTO result = marketService.save(marketDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, marketDTO.getId()))
             .body(result);
     }
 

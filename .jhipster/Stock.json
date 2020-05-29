@@ -2,18 +2,14 @@
   "name": "Stock",
   "fields": [
     {
-      "fieldName": "name",
-      "fieldType": "String",
+      "fieldName": "symbol",
+      "fieldType": "SYMBOL",
+      "fieldValues": "SAMPLE_SYMBOL",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "description",
-      "fieldType": "String"
-    },
-    {
-      "fieldName": "symbol",
-      "fieldType": "Symbol",
-      "fieldValues": "SAMPLE_SYMBOL",
+      "fieldType": "String",
       "fieldValidateRules": ["required"]
     }
   ],

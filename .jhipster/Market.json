@@ -2,18 +2,15 @@
   "name": "Market",
   "fields": [
     {
-      "fieldName": "name",
-      "fieldType": "String",
+      "fieldName": "market",
+      "fieldType": "MARKET",
+      "fieldValues": "SAMPLE_ENUM",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "description",
-      "fieldType": "String"
-    },
-    {
-      "fieldName": "market",
-      "fieldType": "MarketE",
-      "fieldValues": "SAMPLE_ENUM"
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     }
   ],
   "relationships": [

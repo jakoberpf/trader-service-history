@@ -10,16 +10,18 @@ import de.ginisolutions.trader.history.domain.enumeration.SYMBOL;
  */
 @ApiModel(description = "The Stock entity.\n@author A true hipster")
 public class StockDTO implements Serializable {
-
+    
     private String id;
 
     @NotNull
     private SYMBOL symbol;
 
+    @NotNull
     private String description;
 
-    private String marketId;
 
+    private String marketId;
+    
     public String getId() {
         return id;
     }
@@ -74,8 +76,8 @@ public class StockDTO implements Serializable {
     public String toString() {
         return "StockDTO{" +
             "id=" + getId() +
-            ", description='" + getDescription() + "'" +
             ", symbol='" + getSymbol() + "'" +
+            ", description='" + getDescription() + "'" +
             ", marketId='" + getMarketId() + "'" +
             "}";
     }

@@ -277,7 +277,7 @@ public class TickResourceIT {
             .andExpect(jsonPath("$.[*].low").value(hasItem(DEFAULT_LOW.doubleValue())))
             .andExpect(jsonPath("$.[*].volume").value(hasItem(DEFAULT_VOLUME.doubleValue())));
     }
-
+    
     @Test
     public void getTick() throws Exception {
         // Initialize the database
