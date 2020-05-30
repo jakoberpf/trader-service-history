@@ -1,6 +1,6 @@
 package de.ginisolutions.trader.history.repository;
 
-import de.ginisolutions.trader.history.HistoryServiceApp;
+import de.ginisolutions.trader.history.TraderServiceHistoryApp;
 
 import de.ginisolutions.trader.history.config.Constants;
 import de.ginisolutions.trader.history.config.TestSecurityConfiguration;
@@ -28,7 +28,7 @@ import static de.ginisolutions.trader.history.repository.CustomAuditEventReposit
 /**
  * Integration tests for {@link CustomAuditEventRepository}.
  */
-@SpringBootTest(classes = {HistoryServiceApp.class, TestSecurityConfiguration.class})
+@SpringBootTest(classes = {TraderServiceHistoryApp.class, TestSecurityConfiguration.class})
 public class CustomAuditEventRepositoryIT {
 
     @Autowired

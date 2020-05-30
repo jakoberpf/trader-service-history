@@ -1,6 +1,6 @@
 package de.ginisolutions.trader.history.web.rest;
 
-import de.ginisolutions.trader.history.HistoryServiceApp;
+import de.ginisolutions.trader.history.TraderServiceHistoryApp;
 import de.ginisolutions.trader.history.config.TestSecurityConfiguration;
 import de.ginisolutions.trader.history.domain.PersistentAuditEvent;
 import de.ginisolutions.trader.history.repository.PersistenceAuditEventRepository;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @AutoConfigureMockMvc
 @WithMockUser(authorities = AuthoritiesConstants.ADMIN)
-@SpringBootTest(classes = {HistoryServiceApp.class, TestSecurityConfiguration.class})
+@SpringBootTest(classes = {TraderServiceHistoryApp.class, TestSecurityConfiguration.class})
 public class AuditResourceIT {
 
     private static final String SAMPLE_PRINCIPAL = "SAMPLE_PRINCIPAL";

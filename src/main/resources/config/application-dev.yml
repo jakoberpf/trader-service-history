@@ -45,7 +45,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017
-      database: historyService
+      database: TraderServiceHistory
   mail:
     host: localhost
     port: 25

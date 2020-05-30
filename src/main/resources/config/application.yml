@@ -24,8 +24,8 @@ eureka:
     instance-info-replication-interval-seconds: 10
     registry-fetch-interval-seconds: 10
   instance:
-    appname: historyservice
-    instanceId: historyservice:${spring.application.instance-id:${random.value}}
+    appname: traderservicehistory
+    instanceId: traderservicehistory:${spring.application.instance-id:${random.value}}
     lease-renewal-interval-in-seconds: 5
     lease-expiration-duration-in-seconds: 10
     status-page-url-path: ${management.endpoints.web.base-path}/info
@@ -106,7 +106,7 @@ management:
 
 spring:
   application:
-    name: historyService
+    name: TraderServiceHistory
   jmx:
     enabled: false
   messages:
@@ -118,13 +118,13 @@ spring:
       enabled: false
   task:
     execution:
-      thread-name-prefix: history-service-task-
+      thread-name-prefix: trader-service-history-task-
       pool:
         core-size: 2
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: history-service-scheduling-
+      thread-name-prefix: trader-service-history-scheduling-
       pool:
         size: 2
   thymeleaf:
@@ -162,7 +162,7 @@ info:
 
 jhipster:
   clientApp:
-    name: 'historyServiceApp'
+    name: 'traderServiceHistoryApp'
   # By default CORS is disabled. Uncomment to enable.
   # cors:
   #     allowed-origins: "*"
@@ -172,11 +172,11 @@ jhipster:
   #     allow-credentials: true
   #     max-age: 1800
   mail:
-    from: historyService@localhost
+    from: TraderServiceHistory@localhost
   swagger:
     default-include-pattern: /api/.*
-    title: historyService API
-    description: historyService API documentation
+    title: TraderServiceHistory API
+    description: TraderServiceHistory API documentation
     version: 0.0.1
     terms-of-service-url:
     contact-name:

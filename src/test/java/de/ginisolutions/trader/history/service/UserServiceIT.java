@@ -1,6 +1,6 @@
 package de.ginisolutions.trader.history.service;
 
-import de.ginisolutions.trader.history.HistoryServiceApp;
+import de.ginisolutions.trader.history.TraderServiceHistoryApp;
 import de.ginisolutions.trader.history.config.Constants;
 import de.ginisolutions.trader.history.config.TestSecurityConfiguration;
 import de.ginisolutions.trader.history.domain.User;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Integration tests for {@link UserService}.
  */
-@SpringBootTest(classes = {HistoryServiceApp.class, TestSecurityConfiguration.class})
+@SpringBootTest(classes = {TraderServiceHistoryApp.class, TestSecurityConfiguration.class})
 public class UserServiceIT {
 
     private static final String DEFAULT_LOGIN = "johndoe";

@@ -1,7 +1,7 @@
 {
-  "name": "history-service",
+  "name": "trader-service-history",
   "version": "0.0.0",
-  "description": "Description for historyService",
+  "description": "Description for TraderServiceHistory",
   "private": true,
   "license": "UNLICENSED",
   "cacheDirectories": [
