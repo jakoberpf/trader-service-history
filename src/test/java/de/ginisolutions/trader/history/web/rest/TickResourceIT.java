@@ -1,6 +1,6 @@
 package de.ginisolutions.trader.history.web.rest;
 
-import de.ginisolutions.trader.history.HistoryServiceApp;
+import de.ginisolutions.trader.history.TraderServiceHistoryApp;
 import de.ginisolutions.trader.history.config.TestSecurityConfiguration;
 import de.ginisolutions.trader.history.domain.Tick;
 import de.ginisolutions.trader.history.repository.TickRepository;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Integration tests for the {@link TickResource} REST controller.
  */
-@SpringBootTest(classes = { HistoryServiceApp.class, TestSecurityConfiguration.class })
+@SpringBootTest(classes = { TraderServiceHistoryApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class TickResourceIT {

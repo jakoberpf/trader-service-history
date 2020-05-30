@@ -27,7 +27,7 @@ public class TickResource {
 
     private final Logger log = LoggerFactory.getLogger(TickResource.class);
 
-    private static final String ENTITY_NAME = "historyServiceTick";
+    private static final String ENTITY_NAME = "traderServiceHistoryTick";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;

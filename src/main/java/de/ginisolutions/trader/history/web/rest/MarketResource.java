@@ -28,7 +28,7 @@ public class MarketResource {
 
     private final Logger log = LoggerFactory.getLogger(MarketResource.class);
 
-    private static final String ENTITY_NAME = "historyServiceMarket";
+    private static final String ENTITY_NAME = "traderServiceHistoryMarket";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;

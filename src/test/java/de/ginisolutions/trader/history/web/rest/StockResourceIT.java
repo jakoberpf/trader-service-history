@@ -1,6 +1,6 @@
 package de.ginisolutions.trader.history.web.rest;
 
-import de.ginisolutions.trader.history.HistoryServiceApp;
+import de.ginisolutions.trader.history.TraderServiceHistoryApp;
 import de.ginisolutions.trader.history.config.TestSecurityConfiguration;
 import de.ginisolutions.trader.history.domain.Stock;
 import de.ginisolutions.trader.history.repository.StockRepository;
@@ -29,7 +29,7 @@ import de.ginisolutions.trader.history.domain.enumeration.SYMBOL;
 /**
  * Integration tests for the {@link StockResource} REST controller.
  */
-@SpringBootTest(classes = { HistoryServiceApp.class, TestSecurityConfiguration.class })
+@SpringBootTest(classes = { TraderServiceHistoryApp.class, TestSecurityConfiguration.class })
 @AutoConfigureMockMvc
 @WithMockUser
 public class StockResourceIT {
