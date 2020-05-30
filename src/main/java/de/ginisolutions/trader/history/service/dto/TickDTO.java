@@ -16,19 +16,19 @@ public class TickDTO implements Serializable {
     private Long timestamp;
 
     @NotNull
-    private Float open;
+    private Double open;
 
     @NotNull
-    private Float close;
+    private Double close;
 
     @NotNull
-    private Float high;
+    private Double high;
 
     @NotNull
-    private Float low;
+    private Double low;
 
     @NotNull
-    private Float volume;
+    private Double volume;
 
 
     private String stockId;
@@ -49,43 +49,43 @@ public class TickDTO implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public Float getOpen() {
+    public Double getOpen() {
         return open;
     }
 
-    public void setOpen(Float open) {
+    public void setOpen(Double open) {
         this.open = open;
     }
 
-    public Float getClose() {
+    public Double getClose() {
         return close;
     }
 
-    public void setClose(Float close) {
+    public void setClose(Double close) {
         this.close = close;
     }
 
-    public Float getHigh() {
+    public Double getHigh() {
         return high;
     }
 
-    public void setHigh(Float high) {
+    public void setHigh(Double high) {
         this.high = high;
     }
 
-    public Float getLow() {
+    public Double getLow() {
         return low;
     }
 
-    public void setLow(Float low) {
+    public void setLow(Double low) {
         this.low = low;
     }
 
-    public Float getVolume() {
+    public Double getVolume() {
         return volume;
     }
 
-    public void setVolume(Float volume) {
+    public void setVolume(Double volume) {
         this.volume = volume;
     }
 

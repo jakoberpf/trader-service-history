@@ -8,27 +8,27 @@
     },
     {
       "fieldName": "open",
-      "fieldType": "Float",
+      "fieldType": "Double",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "close",
-      "fieldType": "Float",
+      "fieldType": "Double",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "high",
-      "fieldType": "Float",
+      "fieldType": "Double",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "low",
-      "fieldType": "Float",
+      "fieldType": "Double",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "volume",
-      "fieldType": "Float",
+      "fieldType": "Double",
       "fieldValidateRules": ["required"]
     }
   ],

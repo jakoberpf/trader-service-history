@@ -36,20 +36,20 @@ public class TickResourceIT {
     private static final Long DEFAULT_TIMESTAMP = 1L;
     private static final Long UPDATED_TIMESTAMP = 2L;
 
-    private static final Double DEFAULT_OPEN = 1.0;
-    private static final Double UPDATED_OPEN = 2.0;
+    private static final Double DEFAULT_OPEN = 1D;
+    private static final Double UPDATED_OPEN = 2D;
 
-    private static final Double DEFAULT_CLOSE = 1.0;
-    private static final Double UPDATED_CLOSE = 2.0;
+    private static final Double DEFAULT_CLOSE = 1D;
+    private static final Double UPDATED_CLOSE = 2D;
 
-    private static final Double DEFAULT_HIGH = 1.0;
-    private static final Double UPDATED_HIGH = 2.0;
+    private static final Double DEFAULT_HIGH = 1D;
+    private static final Double UPDATED_HIGH = 2D;
 
-    private static final Double DEFAULT_LOW = 1.0;
-    private static final Double UPDATED_LOW = 2.0;
+    private static final Double DEFAULT_LOW = 1D;
+    private static final Double UPDATED_LOW = 2D;
 
-    private static final Double DEFAULT_VOLUME = 1.0;
-    private static final Double UPDATED_VOLUME = 2.0;
+    private static final Double DEFAULT_VOLUME = 1D;
+    private static final Double UPDATED_VOLUME = 2D;
 
     @Autowired
     private TickRepository tickRepository;
