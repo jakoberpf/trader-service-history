@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static de.ginisolutions.trader.history.domain.enumeration.MARKET.SAMPLE_ENUM;
+import static de.ginisolutions.trader.history.domain.enumeration.MARKET.BINANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -35,8 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 public class MarketResourceIT {
 
-    private static final MARKET DEFAULT_MARKET = SAMPLE_ENUM;
-    private static final MARKET UPDATED_MARKET = SAMPLE_ENUM;
+    private static final MARKET DEFAULT_MARKET = BINANCE;
+    private static final MARKET UPDATED_MARKET = BINANCE;
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
@@ -91,7 +91,7 @@ public class MarketResourceIT {
         int databaseSizeBeforeCreate = marketRepository.findAll().size();
         // Create the Market
         restMarketMockMvc.perform(post("/api/markets").with(csrf())
-            .param("marketName", SAMPLE_ENUM.toString())
+            .param("marketName", BINANCE.toString())
             .param("description", DEFAULT_DESCRIPTION))
             .andExpect(status().isCreated());
 

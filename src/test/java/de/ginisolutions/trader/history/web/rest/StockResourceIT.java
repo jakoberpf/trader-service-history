@@ -34,8 +34,8 @@ import de.ginisolutions.trader.history.domain.enumeration.SYMBOL;
 @WithMockUser
 public class StockResourceIT {
 
-    private static final SYMBOL DEFAULT_SYMBOL = SYMBOL.SAMPLE_SYMBOL;
-    private static final SYMBOL UPDATED_SYMBOL = SYMBOL.SAMPLE_SYMBOL;
+    private static final SYMBOL DEFAULT_SYMBOL = SYMBOL.BTCUSDT;
+    private static final SYMBOL UPDATED_SYMBOL = SYMBOL.BTCUSDT;
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
@@ -174,7 +174,7 @@ public class StockResourceIT {
             .andExpect(jsonPath("$.[*].symbol").value(hasItem(DEFAULT_SYMBOL.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
-    
+
     @Test
     public void getStock() throws Exception {
         // Initialize the database
