@@ -3,7 +3,7 @@ package de.ginisolutions.trader.history.web.rest;
 import de.ginisolutions.trader.history.TraderServiceHistoryApp;
 import de.ginisolutions.trader.history.config.TestSecurityConfiguration;
 import de.ginisolutions.trader.history.domain.Market;
-import de.ginisolutions.trader.history.domain.enumeration.MARKET;
+import de.ginisolutions.trader.common.enumeration.MARKET;
 import de.ginisolutions.trader.history.repository.MarketRepository;
 import de.ginisolutions.trader.history.service.MarketService;
 import de.ginisolutions.trader.history.service.dto.MarketDTO;
@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static de.ginisolutions.trader.history.domain.enumeration.MARKET.BINANCE;
+import static de.ginisolutions.trader.common.enumeration.MARKET.BINANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;

@@ -1,6 +1,6 @@
 package de.ginisolutions.trader.history.web.rest;
 
-import de.ginisolutions.trader.history.domain.enumeration.MARKET;
+import de.ginisolutions.trader.common.enumeration.MARKET;
 import de.ginisolutions.trader.history.service.MarketService;
 import de.ginisolutions.trader.history.web.rest.errors.BadRequestAlertException;
 import de.ginisolutions.trader.history.service.dto.MarketDTO;

@@ -1,7 +1,7 @@
 package de.ginisolutions.trader.history.service;
 
 import de.ginisolutions.trader.history.domain.Market;
-import de.ginisolutions.trader.history.domain.enumeration.MARKET;
+import de.ginisolutions.trader.common.enumeration.MARKET;
 import de.ginisolutions.trader.history.repository.MarketRepository;
 import de.ginisolutions.trader.history.service.dto.MarketDTO;
 import de.ginisolutions.trader.history.service.mapper.MarketMapper;

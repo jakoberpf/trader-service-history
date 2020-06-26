@@ -3,14 +3,14 @@ package de.ginisolutions.trader.history.service.dto;
 import io.swagger.annotations.ApiModel;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import de.ginisolutions.trader.history.domain.enumeration.SYMBOL;
+import de.ginisolutions.trader.common.enumeration.SYMBOL;
 
 /**
  * A DTO for the {@link de.ginisolutions.trader.history.domain.Stock} entity.
  */
 @ApiModel(description = "The Stock entity.\n@author A true hipster")
 public class StockDTO implements Serializable {
-    
+
     private String id;
 
     @NotNull
@@ -21,7 +21,7 @@ public class StockDTO implements Serializable {
 
 
     private String marketId;
-    
+
     public String getId() {
         return id;
     }
