@@ -1,11 +1,11 @@
-package de.ginisolutions.trader.common.model;
+package de.ginisolutions.trader.history.domain;
 
 import de.ginisolutions.trader.common.enumeration.MARKET;
 import io.swagger.annotations.ApiModel;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
